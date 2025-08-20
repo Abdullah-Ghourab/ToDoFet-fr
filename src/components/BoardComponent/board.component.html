@@ -1,0 +1,92 @@
+<div class="flex flex-col h-screen">
+  <!-- Top navbar -->
+  <div class="flex items-center justify-between px-4 h-12 bg-slate-800 text-white">
+    <div class="flex items-center gap-3">
+      <div class="font-semibold">ToDoFET</div>
+      <button (click)="toggleBoardsMenu()" class="px-2 py-1 text-sm rounded bg-slate-700 hover:bg-slate-600">Boards</button>
+      <div *ngIf="boardsMenuOpen" class="absolute mt-40 z-10 bg-white text-slate-800 rounded shadow border border-slate-200 w-64 p-2">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-semibold text-sm">Boards</span>
+          <button class="px-2 py-0.5 text-xs rounded bg-blue-600 text-white hover:bg-blue-700" (click)="showBoardForm = true">New</button>
+        </div>
+        <div *ngIf="showBoardForm" class="space-y-2 p-2 rounded bg-slate-50 border border-slate-200 mb-2">
+          <input class="w-full rounded border-slate-300" [(ngModel)]="newBoard.title" placeholder="Board title">
+          <div class="flex gap-2">
+            <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="createBoard()">Save</button>
+            <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showBoardForm = false">Cancel</button>
+          </div>
+        </div>
+        <ul class="space-y-1 max-h-64 overflow-auto">
+          <li *ngFor="let board of boards" 
+              class="p-2 rounded cursor-pointer hover:bg-slate-100"
+              [class]="'p-2 rounded cursor-pointer ' + (selectedBoard?.id === board.id ? 'bg-blue-50' : 'hover:bg-slate-100')"
+              (click)="selectBoard(board); boardsMenuOpen = false">
+            <div class="flex items-center justify-between">
+              <span class="truncate">{{ board.title }}</span>
+              <button class="ml-2 px-2 py-0.5 text-xs rounded bg-rose-600 text-white hover:bg-rose-700" (click)="deleteBoard(board.id); $event.stopPropagation()">Delete</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div></div>
+  </div>
+
+  
+
+  <div class="flex-1 overflow-auto p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <h1 class="text-xl font-semibold" *ngIf="selectedBoard">{{ selectedBoard.title }}</h1>
+    </div>
+    <div class="flex">
+      <!-- Left actions sidebar -->
+      <div class="shrink-0 pr-4 transition-all duration-300 ease-in-out" [ngClass]="actionsSidebarOpen ? 'w-64' : 'w-10'">
+        <div class="sticky top-4">
+          <div class="bg-white rounded border border-slate-200 p-3">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-semibold text-slate-700" [class.hidden]="!actionsSidebarOpen">Actions</h3>
+              <button (click)="toggleActionsSidebar()" class="w-6 h-6 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center hover:bg-slate-300">
+                <span class="transition-transform" [ngClass]="actionsSidebarOpen ? '' : 'rotate-180'">‹</span>
+              </button>
+            </div>
+            <div class="space-y-2" [class.hidden]="!actionsSidebarOpen">
+              <button class="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="openAddColumnFromSidebar()">Add Column</button>
+              <button class="w-full px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700" (click)="openAddCardFromSidebar()">Add Card</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <app-column *ngIf="selectedBoard" [board]="selectedBoard"></app-column>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Column Modal -->
+  <div *ngIf="showAddColumnModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
+    <div class="bg-white rounded shadow-xl w-full max-w-md p-4">
+      <h3 class="text-lg font-semibold mb-3">Add Column</h3>
+      <input class="w-full rounded border-slate-300 mb-3" [(ngModel)]="columnTitle" placeholder="Column title">
+      <div class="flex justify-end gap-2">
+        <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddColumnModal = false">Cancel</button>
+        <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="createColumnFromModal()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Card Modal -->
+  <div *ngIf="showAddCardModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
+    <div class="bg-white rounded shadow-xl w-full max-w-md p-4">
+      <h3 class="text-lg font-semibold mb-3">Add Card</h3>
+      <input class="w-full rounded border-slate-300 mb-2" [(ngModel)]="cardTitle" placeholder="Card title">
+      <textarea class="w-full rounded border-slate-300 mb-2 min-h-[80px]" [(ngModel)]="cardDescription" placeholder="Description"></textarea>
+      <select class="w-full rounded border-slate-300 mb-3" [(ngModel)]="cardColumnId">
+        <option *ngFor="let col of columnComponent?.columns" [ngValue]="col.id">{{ col.title }}</option>
+      </select>
+      <div class="flex justify-end gap-2">
+        <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddCardModal = false">Cancel</button>
+        <button class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700" (click)="createCardFromModal()">Create</button>
+      </div>
+    </div>
+  </div>
+</div>

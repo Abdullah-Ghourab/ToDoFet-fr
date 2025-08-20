@@ -1,0 +1,47 @@
+<div class="flex gap-4 overflow-x-auto p-4">
+  <div *ngFor="let column of columns; trackBy: trackByColumnId" 
+       cdkDropList
+       [id]="column.id.toString()"
+       [cdkDropListData]="column.cards || []"
+       [cdkDropListConnectedTo]="dropListIds"
+       (cdkDropListDropped)="onDrop($event)"
+       class="min-w-[272px] bg-slate-100 rounded-md p-3 flex flex-col gap-3">
+    <div class="flex items-center justify-between">
+      <h3 class="font-semibold text-slate-700 select-none cursor-default">{{ column.title }}</h3>
+      <div class="relative">
+        <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="columnMenuOpen[column.id] = !columnMenuOpen[column.id]">⋮</button>
+        <div *ngIf="columnMenuOpen[column.id]" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteColumn(column.id); columnMenuOpen[column.id] = false">Delete</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex flex-col gap-2 min-h-[100px]">
+      <div *ngFor="let card of column.cards; trackBy: trackByCardId" 
+           cdkDrag
+           class="cursor-move select-none">
+        <app-card [card]="card"></app-card>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showColumnForm" class="min-w-[272px] bg-white p-3 rounded border border-slate-200 flex flex-col gap-2">
+    <input class="rounded border-slate-300" [(ngModel)]="newColumn.title" placeholder="Column title">
+    <div class="flex gap-2">
+      <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="createColumn()">Save</button>
+      <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showColumnForm = false">Cancel</button>
+    </div>
+  </div>
+
+  <div *ngIf="showAddCardForm" class="min-w-[272px] bg-white p-3 rounded border border-slate-200 flex flex-col gap-2">
+    <input class="rounded border-slate-300" [(ngModel)]="boardNewCard.title" placeholder="Card title">
+    <textarea class="rounded border-slate-300 min-h-[60px]" [(ngModel)]="boardNewCard.description" placeholder="Description"></textarea>
+    <select class="rounded border-slate-300" [(ngModel)]="boardNewCard.columnId">
+      <option [ngValue]="col.id" *ngFor="let col of columns; trackBy: trackByColumnId">{{ col.title }}</option>
+    </select>
+    <div class="flex gap-2">
+      <button class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700" (click)="createBoardLevelCard()">Save</button>
+      <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddCardForm = false">Cancel</button>
+    </div>
+  </div>
+</div>

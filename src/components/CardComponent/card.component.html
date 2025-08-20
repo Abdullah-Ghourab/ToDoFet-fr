@@ -1,0 +1,26 @@
+<div *ngIf="!isNew && card" class="bg-white rounded shadow p-3 relative">
+  <div *ngIf="!editMode">
+    <div class="flex items-start justify-between gap-2">
+      <div>
+        <h4 class="font-medium text-slate-800 mb-1 select-none cursor-default">{{ card.title }}</h4>
+        <p *ngIf="card.description" class="text-slate-600 text-sm">{{ card.description }}</p>
+      </div>
+      <div class="relative">
+        <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="menuOpen = !menuOpen">⋮</button>
+        <div *ngIf="menuOpen" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50" (click)="editMode = true; menuOpen = false">Edit</button>
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteCard(card.id); menuOpen = false">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="editMode" class="bg-white rounded p-2 flex flex-col gap-2">
+    <input class="rounded border-slate-300" [(ngModel)]="card.title" placeholder="Title">
+    <textarea class="rounded border-slate-300 min-h-[60px]" [(ngModel)]="card.description" placeholder="Description"></textarea>
+    <div class="flex gap-2">
+      <button class="px-2 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700" (click)="updateCard()">Save</button>
+      <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="editMode = false">Cancel</button>
+    </div>
+  </div>
+</div>
