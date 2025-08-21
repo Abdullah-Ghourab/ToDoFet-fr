@@ -1,11 +1,11 @@
-.board-container {
+.container {
   display: flex;
   height: 100vh;
 }
 
 .sidebar {
   width: 250px;
-  background: #f0f0f0;
+  background: #ebb2b2 !important;
   padding: 20px;
   border-right: 1px solid #ddd;
 }
@@ -51,6 +51,18 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+.edit-board{
+  background: #be9b27 !important;
+}
+.delete-board{
+  background: #d4b9b9 !important;
+}
+.saveboard{
+  background: #be9b27 !important;
+}
+.cancelboard{
+  background: #d4b9b9 !important;
 }
 
 button:hover {

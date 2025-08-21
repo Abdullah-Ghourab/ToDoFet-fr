@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Column } from '../../models/column.model';
 import { Card } from '../../models/card.model';
 import { ColumnService } from '../../services/column.service';
@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './column.component.html',
   styleUrls: ['./column.component.css']
 })
-export class ColumnComponent implements OnInit {
+export class ColumnComponent implements OnInit, OnChanges {
   @Input() board!: Board;
   columns: Column[] = [];
   showColumnForm = false;
@@ -36,10 +36,23 @@ export class ColumnComponent implements OnInit {
     this.loadColumns();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['board'] && this.board?.id) {
+      this.loadColumns();
+    }
+  }
+
   loadColumns(): void {
     if (this.board?.id) {
       this.columnService.getColumnsByBoard(this.board.id).subscribe(columns => {
-        this.columns = columns;
+        // Ensure stable ordering of columns and cards after any backend-side moves
+        this.columns = (columns || [])
+          .slice()
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+          .map(col => ({
+            ...col,
+            cards: (col.cards || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+          }));
         this.dropListIds = (this.columns || []).map(c => c.id.toString());
       });
     }
@@ -57,7 +70,7 @@ export class ColumnComponent implements OnInit {
   }
 
   deleteColumn(id: number): void {
-    if (confirm('Are you sure you want to delete this column?')) {
+    if (confirm('Delete this column? All its cards will be moved to the first column on the board.')) {
       this.columnService.deleteColumn(id).subscribe(() => {
         this.loadColumns();
       });

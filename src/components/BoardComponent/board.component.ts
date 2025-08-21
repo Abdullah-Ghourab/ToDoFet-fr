@@ -24,7 +24,7 @@ export class BoardComponent implements OnInit {
   showBoardForm = false;
   newBoard: Board = { id: 0, title: '' };
   boardsMenuOpen = false;
-  actionsSidebarOpen = true;
+  actionsSidebarOpen = false;
 
   // Add Column modal state
   showAddColumnModal = false;
@@ -35,6 +35,10 @@ export class BoardComponent implements OnInit {
   cardTitle = '';
   cardDescription = '';
   cardColumnId: number | null = null;
+
+  // Edit board modal state
+  showEditBoardModal = false;
+  editBoardTitle = '';
 
   constructor(private boardService: BoardService, private columnService: ColumnService, private cardService: CardService) {}
 
@@ -49,7 +53,11 @@ export class BoardComponent implements OnInit {
   }
 
   selectBoard(board: Board): void {
-    this.selectedBoard = board;
+    this.selectedBoard = { ...board };
+    // Close modals/menus when switching
+    this.showAddColumnModal = false;
+    this.showAddCardModal = false;
+    this.boardsMenuOpen = false;
   }
 
   createBoard(): void {
@@ -129,6 +137,26 @@ export class BoardComponent implements OnInit {
       this.cardDescription = '';
       this.cardColumnId = null;
       this.columnComponent?.loadColumns();
+    });
+  }
+
+  openEditBoardModal(board: Board): void {
+    this.selectedBoard = board;
+    this.editBoardTitle = board.title;
+    this.showEditBoardModal = true;
+  }
+
+  saveBoardTitle(): void {
+    if (!this.selectedBoard || !this.editBoardTitle.trim()) {
+      return;
+    }
+    const updated: Board = { ...this.selectedBoard, title: this.editBoardTitle.trim() };
+    this.boardService.updateBoard(updated.id, updated).subscribe(() => {
+      // Update in list and selected reference
+      const idx = this.boards.findIndex(b => b.id === updated.id);
+      if (idx >= 0) this.boards[idx].title = updated.title;
+      if (this.selectedBoard?.id === updated.id) this.selectedBoard.title = updated.title;
+      this.showEditBoardModal = false;
     });
   }
 }

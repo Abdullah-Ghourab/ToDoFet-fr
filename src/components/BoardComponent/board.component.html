@@ -3,6 +3,9 @@
   <div class="flex items-center justify-between px-4 h-12 bg-slate-800 text-white">
     <div class="flex items-center gap-3">
       <div class="font-semibold">ToDoFET</div>
+      <div *ngIf="boardsMenuOpen" 
+     class="fixed inset-0 z-5" 
+     (click)="boardsMenuOpen = false"></div>
       <button (click)="toggleBoardsMenu()" class="px-2 py-1 text-sm rounded bg-slate-700 hover:bg-slate-600">Boards</button>
       <div *ngIf="boardsMenuOpen" class="absolute mt-40 z-10 bg-white text-slate-800 rounded shadow border border-slate-200 w-64 p-2">
         <div class="flex items-center justify-between mb-2">
@@ -12,8 +15,8 @@
         <div *ngIf="showBoardForm" class="space-y-2 p-2 rounded bg-slate-50 border border-slate-200 mb-2">
           <input class="w-full rounded border-slate-300" [(ngModel)]="newBoard.title" placeholder="Board title">
           <div class="flex gap-2">
-            <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="createBoard()">Save</button>
-            <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showBoardForm = false">Cancel</button>
+            <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 saveboard" (click)="createBoard()">Save</button>
+            <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 cancelboard" (click)="showBoardForm = false">Cancel</button>
           </div>
         </div>
         <ul class="space-y-1 max-h-64 overflow-auto">
@@ -23,7 +26,18 @@
               (click)="selectBoard(board); boardsMenuOpen = false">
             <div class="flex items-center justify-between">
               <span class="truncate">{{ board.title }}</span>
-              <button class="ml-2 px-2 py-0.5 text-xs rounded bg-rose-600 text-white hover:bg-rose-700" (click)="deleteBoard(board.id); $event.stopPropagation()">Delete</button>
+              <div class="flex items-center gap-1">
+                
+                <button class="w-7 h-7 rounded-full bg-green-600 text-white hover:bg-green-700 shadow ring-2 ring-gray-200 ring-offset-1 flex items-center justify-center transition edit-board " title="Edit name" aria-label="Edit board" (click)="openEditBoardModal(board); $event.stopPropagation()"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
+                  <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
+                </svg>
+                </button>
+                <button class="w-7 h-7 rounded-full bg-red-600 text-white hover:bg-red-700 shadow ring-2 ring-gray-200 ring-offset-1 flex items-center justify-center transition delete-board " title="Delete Board" aria-label="Delete board" (click)="deleteBoard(board.id); $event.stopPropagation()"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                </svg>
+                </button>
+              </div>
             </div>
           </li>
         </ul>
@@ -35,19 +49,21 @@
   
 
   <div class="flex-1 overflow-auto p-4">
-    <div class="mb-3 flex items-center justify-between">
+    <div class="mb-3 flex items-center gap-2">
+      <button *ngIf="selectedBoard"
+              (click)="toggleActionsSidebar()"
+              class="w-6 h-6 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center hover:bg-slate-300">
+        <span class="transition-transform" [ngClass]="actionsSidebarOpen ? '' : 'rotate-180'">‹</span>
+      </button>
       <h1 class="text-xl font-semibold" *ngIf="selectedBoard">{{ selectedBoard.title }}</h1>
     </div>
     <div class="flex">
       <!-- Left actions sidebar -->
-      <div class="shrink-0 pr-4 transition-all duration-300 ease-in-out" [ngClass]="actionsSidebarOpen ? 'w-64' : 'w-10'">
+      <div class="shrink-0 pr-4 transition-all duration-300 ease-in-out bg-slate-300" [ngClass]="actionsSidebarOpen ? 'w-64' : 'w-0'">
         <div class="sticky top-4">
-          <div class="bg-white rounded border border-slate-200 p-3">
+          <div class="p-3">
             <div class="flex items-center justify-between mb-2">
               <h3 class="font-semibold text-slate-700" [class.hidden]="!actionsSidebarOpen">Actions</h3>
-              <button (click)="toggleActionsSidebar()" class="w-6 h-6 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center hover:bg-slate-300">
-                <span class="transition-transform" [ngClass]="actionsSidebarOpen ? '' : 'rotate-180'">‹</span>
-              </button>
             </div>
             <div class="space-y-2" [class.hidden]="!actionsSidebarOpen">
               <button class="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="openAddColumnFromSidebar()">Add Column</button>
@@ -61,10 +77,11 @@
       </div>
     </div>
   </div>
+  
 
   <!-- Add Column Modal -->
-  <div *ngIf="showAddColumnModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
-    <div class="bg-white rounded shadow-xl w-full max-w-md p-4">
+  <div *ngIf="showAddColumnModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20"(click)="showAddColumnModal = false">
+    <div class="bg-white rounded shadow-xl w-full max-w-md p-4" (click)="$event.stopPropagation()">
       <h3 class="text-lg font-semibold mb-3">Add Column</h3>
       <input class="w-full rounded border-slate-300 mb-3" [(ngModel)]="columnTitle" placeholder="Column title">
       <div class="flex justify-end gap-2">
@@ -72,11 +89,11 @@
         <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="createColumnFromModal()">Create</button>
       </div>
     </div>
-  </div>
+    </div>
 
   <!-- Add Card Modal -->
-  <div *ngIf="showAddCardModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
-    <div class="bg-white rounded shadow-xl w-full max-w-md p-4">
+  <div *ngIf="showAddCardModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20"(click)="showAddCardModal = false">
+    <div class="bg-white rounded shadow-xl w-full max-w-md p-4"(click)="$event.stopPropagation()">
       <h3 class="text-lg font-semibold mb-3">Add Card</h3>
       <input class="w-full rounded border-slate-300 mb-2" [(ngModel)]="cardTitle" placeholder="Card title">
       <textarea class="w-full rounded border-slate-300 mb-2 min-h-[80px]" [(ngModel)]="cardDescription" placeholder="Description"></textarea>
@@ -86,6 +103,18 @@
       <div class="flex justify-end gap-2">
         <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddCardModal = false">Cancel</button>
         <button class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700" (click)="createCardFromModal()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Board Modal -->
+  <div *ngIf="showEditBoardModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
+    <div class="bg-white rounded shadow-xl w-full max-w-md p-4">
+      <h3 class="text-lg font-semibold mb-3">Edit Board</h3>
+      <input class="w-full rounded border-slate-300 mb-3" [(ngModel)]="editBoardTitle" placeholder="Board title">
+      <div class="flex justify-end gap-2">
+        <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showEditBoardModal = false">Cancel</button>
+        <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="saveBoardTitle()">Save</button>
       </div>
     </div>
   </div>
