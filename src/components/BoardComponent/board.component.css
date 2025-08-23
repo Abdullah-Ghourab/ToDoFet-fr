@@ -53,16 +53,16 @@ button {
   cursor: pointer;
 }
 .edit-board{
-  background: #be9b27 !important;
+  background: #8b7355 !important;
 }
 .delete-board{
-  background: #d4b9b9 !important;
+  background: #c4a4a4 !important;
 }
 .saveboard{
-  background: #be9b27 !important;
+  background: #8b7355 !important;
 }
 .cancelboard{
-  background: #d4b9b9 !important;
+  background: #c4a4a4 !important;
 }
 
 button:hover {

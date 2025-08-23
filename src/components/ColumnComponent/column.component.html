@@ -5,13 +5,13 @@
        [cdkDropListData]="column.cards || []"
        [cdkDropListConnectedTo]="dropListIds"
        (cdkDropListDropped)="onDrop($event)"
-       class="min-w-[272px] bg-slate-100 rounded-md p-3 flex flex-col gap-3">
-    <div class="flex items-center justify-between">
-      <h3 class="font-semibold text-slate-700 select-none cursor-default">{{ column.title }}</h3>
+       class="min-w-[272px] bg-rose-50 rounded-md p-3 flex flex-col gap-3">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-300 mb-3 bg-rose-200 rounded-t-md -mx-3 -mt-3 px-3 pt-3">
+      <h3 class="font-bold text-lg text-slate-700 select-none cursor-default">{{ column.title }}</h3>
       <div class="relative">
         <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="columnMenuOpen[column.id] = !columnMenuOpen[column.id]">⋮</button>
         <div *ngIf="columnMenuOpen[column.id]" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteColumn(column.id); columnMenuOpen[column.id] = false">Delete</button>
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteColumn(column.id); columnMenuOpen[column.id] = false">Delete Column!</button>
         </div>
       </div>
     </div>

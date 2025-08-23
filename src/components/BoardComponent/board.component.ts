@@ -159,4 +159,10 @@ export class BoardComponent implements OnInit {
       this.showEditBoardModal = false;
     });
   }
+
+  goToWelcome(): void {
+    this.selectedBoard = null;
+    this.boardsMenuOpen = false;
+    this.actionsSidebarOpen = false;
+  }
 }

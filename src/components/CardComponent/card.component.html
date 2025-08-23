@@ -1,4 +1,4 @@
-<div *ngIf="!isNew && card" class="bg-white rounded shadow p-3 relative">
+<div *ngIf="!isNew && card" class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-3 relative">
   <div *ngIf="!editMode">
     <div class="flex items-start justify-between gap-2">
       <div>
@@ -8,8 +8,8 @@
       <div class="relative">
         <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="menuOpen = !menuOpen">⋮</button>
         <div *ngIf="menuOpen" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50" (click)="editMode = true; menuOpen = false">Edit</button>
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteCard(card.id); menuOpen = false">Delete</button>
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50" (click)="editMode = true; menuOpen = false">Edit Card</button>
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteCard(card.id); menuOpen = false">Delete Card</button>
         </div>
       </div>
     </div>
