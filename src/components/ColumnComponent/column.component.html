@@ -5,12 +5,27 @@
        [cdkDropListData]="column.cards || []"
        [cdkDropListConnectedTo]="dropListIds"
        (cdkDropListDropped)="onDrop($event)"
-       class="min-w-[272px] bg-rose-50 rounded-md p-3 flex flex-col gap-3">
+       class="min-w-[272px] bg-rose-50 rounded-md p-3 flex flex-col gap-3" style="background-color: #fce3e4 !important;">
     <div class="flex items-center justify-between pb-3 border-b border-slate-300 mb-3 bg-rose-200 rounded-t-md -mx-3 -mt-3 px-3 pt-3">
-      <h3 class="font-bold text-lg text-slate-700 select-none cursor-default">{{ column.title }}</h3>
-      <div class="relative">
+      <div *ngIf="editingColumnId === column.id; else displayTitle" class="flex-1 mr-2">
+        <input 
+          class="w-full px-2 py-1 text-lg font-bold text-slate-700 bg-white border border-slate-300 rounded" 
+          [(ngModel)]="editColumnTitle" 
+          (keyup.enter)="saveColumnEdit()" 
+          (keyup.escape)="cancelColumnEdit()" 
+          #editInput>
+        <div class="flex gap-1 mt-1">
+          <button class="px-2 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700" (click)="saveColumnEdit()">Save</button>
+          <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="cancelColumnEdit()">Cancel</button>
+        </div>
+      </div>
+      <ng-template #displayTitle>
+        <h3 class="font-bold text-lg text-slate-700 select-none cursor-default">{{ column.title }}</h3>
+      </ng-template>
+      <div class="relative column-menu-container">
         <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="columnMenuOpen[column.id] = !columnMenuOpen[column.id]">⋮</button>
         <div *ngIf="columnMenuOpen[column.id]" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-blue-600" (click)="startEditColumn(column)">Edit Name</button>
           <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteColumn(column.id); columnMenuOpen[column.id] = false">Delete Column!</button>
         </div>
       </div>
@@ -20,7 +35,7 @@
       <div *ngFor="let card of column.cards; trackBy: trackByCardId" 
            cdkDrag
            class="cursor-move select-none">
-        <app-card [card]="card"></app-card>
+        <app-card [card]="card" [onCardDeletedCallback]="onCardDeleted.bind(this)" (cardDeleted)="onCardDeleted($event)"></app-card>
       </div>
     </div>
   </div>

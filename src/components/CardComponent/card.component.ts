@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostListener, Output, EventEmitter } from '@angular/core';
 import { Card } from '../../models/card.model';
 import { CardService } from '../../services/card.service';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,8 @@ export class CardComponent implements OnInit {
   @Input() card?: Card;
   @Input() columnId?: number;
   @Input() isNew = false;
+  @Input() onCardDeletedCallback?: (cardId: number) => void;
+  @Output() cardDeleted = new EventEmitter<number>();
   
   editMode = false;
   menuOpen = false;
@@ -47,7 +49,29 @@ export class CardComponent implements OnInit {
 
   deleteCard(id: number): void {
     if (confirm('Are you sure you want to delete this card?')) {
-      this.cardService.deleteCard(id).subscribe();
+      this.cardService.deleteCard(id).subscribe({
+        next: () => {
+          // Emit the event
+          this.cardDeleted.emit(id);
+          // Call the callback if provided
+          if (this.onCardDeletedCallback) {
+            this.onCardDeletedCallback(id);
+          }
+        },
+        error: (error) => {
+          console.error('Error deleting card:', error);
+        }
+      });
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const clickedInsideMenu = target.closest('.card-menu-container');
+    
+    if (!clickedInsideMenu) {
+      this.menuOpen = false;
     }
   }
 }

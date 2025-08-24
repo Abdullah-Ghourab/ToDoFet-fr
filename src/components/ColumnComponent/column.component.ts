@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Column } from '../../models/column.model';
 import { Card } from '../../models/card.model';
 import { ColumnService } from '../../services/column.service';
@@ -26,10 +26,13 @@ export class ColumnComponent implements OnInit, OnChanges {
   showAddCardForm = false;
   boardNewCard: Card = { id: 0, title: '', description: '', order: 0, columnId: 0 };
   columnMenuOpen: { [columnId: number]: boolean } = {};
+  editingColumnId: number | null = null;
+  editColumnTitle: string = '';
 
   constructor(
     private columnService: ColumnService,
-    private cardService: CardService
+    private cardService: CardService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +77,46 @@ export class ColumnComponent implements OnInit, OnChanges {
       this.columnService.deleteColumn(id).subscribe(() => {
         this.loadColumns();
       });
+    }
+  }
+
+  startEditColumn(column: Column): void {
+    this.editingColumnId = column.id;
+    this.editColumnTitle = column.title;
+    this.columnMenuOpen[column.id] = false;
+  }
+
+  saveColumnEdit(): void {
+    if (this.editingColumnId && this.editColumnTitle.trim()) {
+      const column = this.columns.find(c => c.id === this.editingColumnId);
+      if (column) {
+        const updatedColumn = { ...column, title: this.editColumnTitle.trim() };
+        this.columnService.updateColumn(this.editingColumnId, updatedColumn).subscribe(() => {
+          this.loadColumns();
+          this.cancelColumnEdit();
+        });
+      }
+    }
+  }
+
+  cancelColumnEdit(): void {
+    this.editingColumnId = null;
+    this.editColumnTitle = '';
+  }
+
+  onCardDeleted(cardId: number): void {
+    // Simply reload all columns to ensure UI is updated
+    this.loadColumns();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const clickedInsideMenu = target.closest('.column-menu-container');
+    
+    if (!clickedInsideMenu) {
+      // Close all column menus
+      this.columnMenuOpen = {};
     }
   }
 

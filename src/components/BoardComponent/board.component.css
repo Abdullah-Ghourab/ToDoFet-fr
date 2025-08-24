@@ -51,6 +51,17 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+.text-container {
+  cursor: default;
+}
+
+.selectable-text {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  cursor: default;
+}
 .edit-board{
   background: #8b7355 !important;
 }

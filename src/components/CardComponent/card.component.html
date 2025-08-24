@@ -5,10 +5,10 @@
         <h4 class="font-medium text-slate-800 mb-1 select-none cursor-default">{{ card.title }}</h4>
         <p *ngIf="card.description" class="text-slate-600 text-sm">{{ card.description }}</p>
       </div>
-      <div class="relative">
+      <div class="relative card-menu-container">
         <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="menuOpen = !menuOpen">⋮</button>
         <div *ngIf="menuOpen" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50" (click)="editMode = true; menuOpen = false">Edit Card</button>
+          <button class="w-full text-left px-3 bg-bl text-blue py-2 hover:bg-slate-50 text-blue-600" (click)="editMode = true; menuOpen = false">Edit Card</button>
           <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteCard(card.id); menuOpen = false">Delete Card</button>
         </div>
       </div>
