@@ -71,8 +71,14 @@
               <h3 class="font-semibold text-slate-700" [class.hidden]="!actionsSidebarOpen">Actions</h3>
             </div>
             <div class="space-y-2" [class.hidden]="!actionsSidebarOpen">
-              <button class="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="openAddColumnFromSidebar()" style="background-color:#8b7355 !important ;">Add Column</button>
-              <button class="w-full px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700" (click)="openAddCardFromSidebar()" style="background-color:#8b7355 !important ;">Add Card</button>
+              <button class="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2 " (click)="openAddColumnFromSidebar()" style="background-color:#8b7355 !important ;"> <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">                 
+                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>               
+            </svg>    
+               Add Column</button>
+                           
+              <button class="w-full px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 flex items-center gap-2 " (click)="openAddCardFromSidebar()" style="background-color:#8b7355 !important ;"> <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">                 
+                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>               
+            </svg>    Add Card</button>
             </div>
           </div>
         </div>
