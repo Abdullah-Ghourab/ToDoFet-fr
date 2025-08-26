@@ -20,6 +20,7 @@ export class CardComponent implements OnInit {
   
   editMode = false;
   menuOpen = false;
+  showDeleteAlert = false;
   newCard: Card = { id: 0, title: '', description: '', order: 0, columnId: 0 };
 
   constructor(private cardService: CardService) {}
@@ -43,6 +44,26 @@ export class CardComponent implements OnInit {
     if (this.card && this.card.title.trim()) {
       this.cardService.updateCard(this.card.id, this.card).subscribe(() => {
         this.editMode = false;
+      });
+    }
+  }
+
+  confirmDeleteCard(): void {
+    if (this.card) {
+      this.cardService.deleteCard(this.card.id).subscribe({
+        next: () => {
+          // Emit the event
+          this.cardDeleted.emit(this.card!.id);
+          // Call the callback if provided
+          if (this.onCardDeletedCallback) {
+            this.onCardDeletedCallback(this.card!.id);
+          }
+          this.showDeleteAlert = false;
+        },
+        error: (error) => {
+          console.error('Error deleting card:', error);
+          this.showDeleteAlert = false;
+        }
       });
     }
   }

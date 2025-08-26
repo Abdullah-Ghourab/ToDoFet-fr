@@ -28,6 +28,8 @@ export class ColumnComponent implements OnInit, OnChanges {
   columnMenuOpen: { [columnId: number]: boolean } = {};
   editingColumnId: number | null = null;
   editColumnTitle: string = '';
+  showDeleteAlert = false;
+  columnToDelete: Column | null = null;
 
   constructor(
     private columnService: ColumnService,
@@ -70,6 +72,21 @@ export class ColumnComponent implements OnInit, OnChanges {
       this.showColumnForm = false;
       this.newColumn = { id: 0, title: '', order: 0, boardId: 0 };
     });
+  }
+
+  showDeleteColumnAlert(column: Column): void {
+    this.columnToDelete = column;
+    this.showDeleteAlert = true;
+  }
+
+  confirmDeleteColumn(): void {
+    if (this.columnToDelete) {
+      this.columnService.deleteColumn(this.columnToDelete.id).subscribe(() => {
+        this.loadColumns();
+        this.showDeleteAlert = false;
+        this.columnToDelete = null;
+      });
+    }
   }
 
   deleteColumn(id: number): void {

@@ -40,6 +40,10 @@ export class BoardComponent implements OnInit {
   showEditBoardModal = false;
   editBoardTitle = '';
 
+  // Delete board modal state
+  showDeleteBoardAlert = false;
+  boardToDelete: Board | null = null;
+
   constructor(private boardService: BoardService, private columnService: ColumnService, private cardService: CardService) {}
 
   ngOnInit(): void {
@@ -66,6 +70,24 @@ export class BoardComponent implements OnInit {
       this.showBoardForm = false;
       this.newBoard = { id: 0, title: '' };
     });
+  }
+
+  openDeleteBoardAlert(board: Board): void {
+    this.boardToDelete = board;
+    this.showDeleteBoardAlert = true;
+  }
+
+  confirmDeleteBoard(): void {
+    if (this.boardToDelete) {
+      this.boardService.deleteBoard(this.boardToDelete.id).subscribe(() => {
+        this.loadBoards();
+        if (this.selectedBoard?.id === this.boardToDelete!.id) {
+          this.selectedBoard = null;
+        }
+        this.showDeleteBoardAlert = false;
+        this.boardToDelete = null;
+      });
+    }
   }
 
   deleteBoard(id: number): void {

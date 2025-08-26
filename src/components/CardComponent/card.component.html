@@ -9,7 +9,7 @@
         <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="menuOpen = !menuOpen">⋮</button>
         <div *ngIf="menuOpen" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
           <button class="w-full text-left px-3 bg-bl text-blue py-2 hover:bg-slate-50 text-blue-600" (click)="editMode = true; menuOpen = false">Edit Card</button>
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="deleteCard(card.id); menuOpen = false">Delete Card!</button>
+          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="showDeleteAlert = true; menuOpen = false">Delete Card!</button>
         </div>
       </div>
     </div>
@@ -19,8 +19,33 @@
     <input class="rounded border-slate-300" [(ngModel)]="card.title" placeholder="Title">
     <textarea class="rounded border-slate-300 min-h-[60px]" [(ngModel)]="card.description" placeholder="Description"></textarea>
     <div class="flex gap-2">
-      <button class="px-2 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700" (click)="updateCard()">Save</button>
+      <button class="px-2 py-1 text-xs rounded bg-green-700 text-white hover:bg-green-800" (click)="updateCard()">Save</button>
       <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="editMode = false">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Alert Modal -->
+<div *ngIf="showDeleteAlert" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" (click)="showDeleteAlert = false">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6" (click)="$event.stopPropagation()">
+    <div class="flex items-center mb-4">
+      <div class="flex-shrink-0 w-10 h-10 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="text-center">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Delete Card</h3>
+      <p class="text-sm text-gray-500 mb-6">Are you sure you want to delete "{{ card?.title }}"? This action cannot be undone.</p>
+      <div class="flex justify-center gap-3">
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showDeleteAlert = false">
+          Cancel
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" (click)="confirmDeleteCard()">
+          Delete
+        </button>
+      </div>
     </div>
   </div>
 </div>

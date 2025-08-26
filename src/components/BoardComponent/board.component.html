@@ -10,13 +10,13 @@
       <div *ngIf="boardsMenuOpen" class="absolute z-10 bg-white text-slate-800 rounded shadow border border-gray-400 w-64 p-2" style="margin-top: 15.8rem;">
         <div class="flex items-center justify-between mb-2">
           <span class="font-semibold text-sm">Boards</span>
-          <button class="px-2 py-0.5 text-xs rounded bg-blue-600 text-white hover:bg-blue-700" (click)="showBoardForm = true">New</button>
+          <button class="px-2 py-0.5 text-xs rounded bg-blue-700 text-white hover:bg-blue-800" (click)="showBoardForm = true">New</button>
         </div>
         <div *ngIf="showBoardForm" class="space-y-2 p-2 rounded bg-slate-50 border border-slate-200 mb-2">
           <input class="w-full rounded border-slate-300" [(ngModel)]="newBoard.title" placeholder="Board title">
           <div class="flex gap-2">
-            <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 saveboard" (click)="createBoard()">Save</button>
-            <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300 cancelboard" (click)="showBoardForm = false">Cancel</button>
+            <button class="px-4 py-2 rounded bg-green-700 text-white hover:bg-green-800" (click)="createBoard()">Save</button>
+            <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showBoardForm = false">Cancel</button>
           </div>
         </div>
         <ul class="space-y-1 max-h-64 overflow-auto">
@@ -28,12 +28,12 @@
               <span class="truncate">{{ board.title }}</span>
               <div class="flex items-center gap-1">
                 
-                <button class="w-7 h-7 rounded-full bg-green-600 text-white hover:bg-green-700 shadow ring-2 ring-gray-200 ring-offset-1 flex items-center justify-center transition edit-board " title="Edit name" aria-label="Edit board name" (click)="openEditBoardModal(board); $event.stopPropagation()"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <button class="w-7 h-7 rounded-md bg-green-700 text-white hover:bg-green-800 shadow ring-2 ring-gray-200 ring-offset-1 flex items-center justify-center transition" title="Edit name" aria-label="Edit board name" (click)="openEditBoardModal(board); $event.stopPropagation()"><svg class="w-6 h-6 text-slate-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
                   <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
                 </svg>
                 </button>
-                <button class="w-7 h-7 rounded-full bg-red-600 text-white hover:bg-red-700 shadow ring-2 ring-gray-200 ring-offset-1 flex items-center justify-center transition delete-board " title="Delete Board" aria-label="Delete board" (click)="deleteBoard(board.id); $event.stopPropagation()"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <button class="w-7 h-7 rounded-md bg-red-600 text-white hover:bg-red-700 shadow ring-2 ring-gray-200 ring-offset-1 flex items-center justify-center transition" title="Delete Board" aria-label="Delete board" (click)="openDeleteBoardAlert(board); $event.stopPropagation()"><svg class="w-6 h-6 text-slate-200 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
                 </svg>
                 </button>
@@ -52,7 +52,7 @@
     <div class="mb-3 flex items-center gap-2 -ml-4">
       <button *ngIf="selectedBoard"
               (click)="toggleActionsSidebar()"
-              class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center hover:bg-slate-300" style="background-color: rgb(254 205 211 / var(--tw-bg-opacity, 1)) !important;">
+              class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center hover:bg-slate-300">
         <svg *ngIf="actionsSidebarOpen" class="w-5 h-5 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
         </svg>
@@ -71,12 +71,12 @@
               <h3 class="font-semibold text-slate-700" [class.hidden]="!actionsSidebarOpen">Actions</h3>
             </div>
             <div class="space-y-2" [class.hidden]="!actionsSidebarOpen">
-              <button class="w-full px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2 " (click)="openAddColumnFromSidebar()" style="background-color:#8b7355 !important ;"> <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">                 
+              <button class="w-full px-3 py-2 rounded bg-green-700 text-white hover:bg-green-800 flex items-center gap-2 " (click)="openAddColumnFromSidebar()"> <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">                 
                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>               
             </svg>    
                Add Column</button>
                            
-              <button class="w-full px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 flex items-center gap-2 " (click)="openAddCardFromSidebar()" style="background-color:#8b7355 !important ;"> <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">                 
+              <button class="w-full px-3 py-2 rounded bg-green-700 text-white hover:bg-green-800 flex items-center gap-2 " (click)="openAddCardFromSidebar()"> <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">                 
                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>               
             </svg>    Add Card</button>
             </div>
@@ -105,8 +105,8 @@
       <h3 class="text-lg font-semibold mb-3">Add Column</h3>
       <input class="w-full rounded border-slate-300 mb-3" [(ngModel)]="columnTitle" placeholder="Column title">
       <div class="flex justify-end gap-2">
-        <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddColumnModal = false" style="background-color: #c4a4a4 !important;">Cancel</button>
-        <button class="px-3 py-1 rounded text-white hover:opacity-90" style="background-color: #15803d;" (click)="createColumnFromModal()">Create</button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showAddColumnModal = false">Cancel</button>
+        <button class="px-3 py-1 rounded text-white bg-green-700 text-white hover:bg-green-800"  (click)="createColumnFromModal()">Create</button>
       </div>
     </div>
     </div>
@@ -117,12 +117,12 @@
       <h3 class="text-lg font-semibold mb-3">Add Card</h3>
       <input class="w-full rounded border-slate-300 mb-2" [(ngModel)]="cardTitle" placeholder="Card title">
       <textarea class="w-full rounded border-slate-300 mb-2 min-h-[80px]" [(ngModel)]="cardDescription" placeholder="Description"></textarea>
-      <select class="w-full rounded border-slate-300 mb-3" [(ngModel)]="cardColumnId">
+      <select class="w-full rounded border-slate-300 mb-3 cursor-pointer" [(ngModel)]="cardColumnId">
         <option *ngFor="let col of columnComponent?.columns" [ngValue]="col.id">{{ col.title }}</option>
       </select>
       <div class="flex justify-end gap-2">
-        <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddCardModal = false" style="background-color: #c4a4a4 !important;">Cancel</button>
-        <button class="px-3 py-1 rounded text-white hover:opacity-90" style="background-color: #15803d;" (click)="createCardFromModal()">Create</button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showAddCardModal = false">Cancel</button>
+        <button class="px-3 py-1 rounded text-white bg-green-700 text-white hover:bg-green-800"  (click)="createCardFromModal()">Create</button>
       </div>
     </div>
   </div>
@@ -133,8 +133,33 @@
       <h3 class="text-lg font-semibold mb-3">Edit Board Name</h3>
       <input class="w-full rounded border-slate-300 mb-3" [(ngModel)]="editBoardTitle" placeholder="Board title">
       <div class="flex justify-end gap-2">
-        <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showEditBoardModal = false" style="background-color: #c4a4a4 !important;">Cancel</button>
-        <button class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700" (click)="saveBoardTitle()" style="background-color: #15803d !important;">Save</button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showEditBoardModal = false">Cancel</button>
+        <button class="px-3 py-1 rounded bg-green-700 text-white hover:bg-green-800" (click)="saveBoardTitle()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Board Alert Modal -->
+  <div *ngIf="showDeleteBoardAlert" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" (click)="showDeleteBoardAlert = false">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6" (click)="$event.stopPropagation()">
+      <div class="flex items-center mb-4">
+        <div class="flex-shrink-0 w-10 h-10 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="text-center">
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Delete Board</h3>
+        <p class="text-sm text-gray-500 mb-6">Are you sure you want to delete "{{ boardToDelete?.title }}"? This will permanently delete the board and all its columns and cards. This action cannot be undone.</p>
+        <div class="flex justify-center gap-3">
+          <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showDeleteBoardAlert = false">
+            Cancel
+          </button>
+          <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" (click)="confirmDeleteBoard()">
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   </div>

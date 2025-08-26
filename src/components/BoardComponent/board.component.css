@@ -43,14 +43,7 @@ li.selected {
   font-weight: bold;
 }
 
-button {
-  margin-left: 10px;
-  padding: 4px 8px;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+
 .text-container {
   cursor: default;
 }
@@ -70,8 +63,5 @@ button {
 }
 .saveboard{
   background: #8b7355 !important;
-}
-.cancelboard{
-  background: #c4a4a4 !important;
 }
 
