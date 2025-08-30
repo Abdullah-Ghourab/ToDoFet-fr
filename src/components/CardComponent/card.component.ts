@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, HostListener, Output, EventEmitter } from '@angular/core';
 import { Card } from '../../models/card.model';
+import { Column } from '../../models/column.model';
 import { CardService } from '../../services/card.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MoveCardRequest } from '../../interface/move-card-request';
 
 @Component({
   selector: 'app-card',
@@ -15,12 +17,16 @@ export class CardComponent implements OnInit {
   @Input() card?: Card;
   @Input() columnId?: number;
   @Input() isNew = false;
+  @Input() availableColumns: Column[] = [];
   @Input() onCardDeletedCallback?: (cardId: number) => void;
   @Output() cardDeleted = new EventEmitter<number>();
+  @Output() cardMoved = new EventEmitter<void>();
   
   editMode = false;
   menuOpen = false;
   showDeleteAlert = false;
+  showMoveDropdown = false;
+  selectedColumnId: number | null = null;
   newCard: Card = { id: 0, title: '', description: '', order: 0, columnId: 0 };
 
   constructor(private cardService: CardService) {}
@@ -81,6 +87,27 @@ export class CardComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting card:', error);
+        }
+      });
+    }
+  }
+
+  moveCard(): void {
+    if (this.card && this.selectedColumnId && this.selectedColumnId !== this.card.columnId) {
+      const request: MoveCardRequest = {
+        newColumnId: this.selectedColumnId,
+        newPosition: 1 // Move to top of the target column
+      };
+      
+      this.cardService.moveCard(this.card.id, request).subscribe({
+        next: () => {
+          this.showMoveDropdown = false;
+          this.selectedColumnId = null;
+          this.cardMoved.emit();
+        },
+        error: (error) => {
+          console.error('Error moving card:', error);
+          this.showMoveDropdown = false;
         }
       });
     }

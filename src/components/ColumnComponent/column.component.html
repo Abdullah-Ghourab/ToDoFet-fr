@@ -35,7 +35,7 @@
       <div *ngFor="let card of column.cards; trackBy: trackByCardId" 
            cdkDrag
            class="cursor-move select-none">
-        <app-card [card]="card" [onCardDeletedCallback]="onCardDeleted.bind(this)" (cardDeleted)="onCardDeleted($event)"></app-card>
+        <app-card [card]="card" [availableColumns]="columns" [onCardDeletedCallback]="onCardDeleted.bind(this)" (cardDeleted)="onCardDeleted($event)" (cardMoved)="onCardMoved()"></app-card>
       </div>
     </div>
   </div>

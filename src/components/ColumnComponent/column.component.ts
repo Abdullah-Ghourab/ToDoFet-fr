@@ -126,6 +126,11 @@ export class ColumnComponent implements OnInit, OnChanges {
     this.loadColumns();
   }
 
+  onCardMoved(): void {
+    // Reload columns to reflect the card move
+    this.loadColumns();
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
