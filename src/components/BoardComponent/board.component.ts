@@ -34,6 +34,7 @@ export class BoardComponent implements OnInit {
   showAddCardModal = false;
   cardTitle = '';
   cardDescription = '';
+  cardPriority = 1; // Default to Medium priority
   cardColumnId: number | null = null;
 
   // Edit board modal state
@@ -113,6 +114,7 @@ export class BoardComponent implements OnInit {
   openAddCardFromSidebar(): void {
     this.cardTitle = '';
     this.cardDescription = '';
+    this.cardPriority = 1; // Reset to default Medium priority
     // Default column selection to first available column if present
     const columns = this.columnComponent?.columns || [];
     this.cardColumnId = columns.length ? columns[0].id : null;
@@ -145,12 +147,13 @@ export class BoardComponent implements OnInit {
     if (!this.cardTitle.trim() || !this.cardColumnId) {
       return;
     }
-    const targetColumn = (this.columnComponent?.columns || []).find(c => c.id === this.cardColumnId);
     const newCard: Card = {
       id: 0,
       title: this.cardTitle.trim(),
-      description: this.cardDescription || '',
-      order: (targetColumn?.cards?.length || 0) + 1,
+      description: this.cardDescription.trim(),
+      createdOn: new Date().toISOString(),
+      priority: this.cardPriority,
+      order: 0,
       columnId: this.cardColumnId
     };
     this.cardService.createCard(newCard).subscribe(() => {

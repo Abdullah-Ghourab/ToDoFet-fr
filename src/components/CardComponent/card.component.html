@@ -1,27 +1,158 @@
-<div *ngIf="!isNew && card" class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-3 relative">
+<!-- Card Preview -->
+<div *ngIf="!isNew && card" class="bg-white p-3 rounded shadow-sm border border-slate-200 hover:shadow-md transition-all"
+     [class.cursor-move]="!showDetailView"
+     [class.bg-blue-50]="editMode"
+     (click)="!editMode && openDetailView()"
+     cdkDrag
+     [cdkDragDisabled]="showDetailView">
   <div *ngIf="!editMode">
     <div class="flex items-start justify-between gap-2">
-      <div>
-        <h4 class="font-medium text-slate-800 mb-1 select-none cursor-default">{{ card.title }}</h4>
-        <p *ngIf="card.description" class="text-slate-600 text-sm">{{ card.description }}</p>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="flex-shrink-0 inline-block w-3 h-3 rounded-full" 
+                [ngClass]="{
+                  'bg-green-500': card.priority === 0,
+                  'bg-yellow-500': card.priority === 1,
+                  'bg-orange-500': card.priority === 2,
+                  'bg-red-500': card.priority === 3
+                }"></span>
+          <h4 class="font-medium text-slate-800 select-none truncate">{{ card.title }}</h4>
+        </div>
+        <p *ngIf="card.description" class="text-slate-600 text-sm mt-1 truncate">
+          {{ (card.description.length > 20) ? (card.description | slice:0:20) + '...' : card.description }}
+        </p>
+        <div class="text-xs text-gray-500 mt-2">
+          <span>Created: {{ card.createdOn | date:'shortDate' }}</span>
+        </div>
       </div>
-      <div class="relative card-menu-container">
-        <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="menuOpen = !menuOpen">⋮</button>
-        <div *ngIf="menuOpen" class="absolute right-0 mt-1 w-36 bg-white border border-slate-200 rounded shadow z-10">
-          <button class="w-full text-left px-3 bg-bl text-blue py-2 hover:bg-slate-50 text-blue-600" (click)="editMode = true; menuOpen = false">Edit Card</button>
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-green-600" (click)="showMoveDropdown = !showMoveDropdown; menuOpen = false">Move Card</button>
-          <button class="w-full text-left px-3 py-2 hover:bg-slate-50 text-rose-600" (click)="showDeleteAlert = true; menuOpen = false">Delete Card!</button>
+      <div class="relative">
+        <div>
+          <button type="button" 
+                  class="flex items-center justify-center w-6 h-6 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none" 
+                  (click)="toggleMenu($event)"
+                  aria-expanded="true" 
+                  aria-haspopup="true">
+            <span class="sr-only">Open options</span>
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="menuOpen" 
+             class="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+             role="menu" 
+             aria-orientation="vertical" 
+             (click)="$event.stopPropagation()">
+          <div class="py-1" role="none">
+            <button (click)="editCard()" 
+                    class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" 
+                    role="menuitem">
+              Edit Card
+            </button>
+            <button (click)="initiateMove()" 
+                    class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" 
+                    role="menuitem">
+              Move Card
+            </button>
+            <button (click)="initiateDelete()" 
+                    class="text-red-600 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" 
+                    role="menuitem">
+              Delete Card
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  
-  <div *ngIf="editMode" class="bg-white rounded p-2 flex flex-col gap-2">
-    <input class="rounded border-slate-300" [(ngModel)]="card.title" placeholder="Title">
-    <textarea class="rounded border-slate-300 min-h-[60px]" [(ngModel)]="card.description" placeholder="Description"></textarea>
+  <div *ngIf="editMode && card" class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-semibold text-slate-700">Title</label>
+      <input 
+        class="rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+        [(ngModel)]="card.title" 
+        placeholder="Enter a title"
+        autofocus>
+    </div>
+    
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-semibold text-slate-700">Description</label>
+      <textarea 
+        class="rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[80px]" 
+        [(ngModel)]="card.description" 
+        placeholder="Add a detailed description...">
+      </textarea>
+    </div>
+    
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-semibold text-slate-700">Priority</label>
+      <select 
+        class="rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+        [(ngModel)]="card.priority">
+        <option [ngValue]="3" class="text-red-600">🚨 Critical</option>
+        <option [ngValue]="2" class="text-orange-500">🔴 High</option>
+        <option [ngValue]="1" class="text-yellow-500">🟡 Medium</option>
+        <option [ngValue]="0" class="text-green-600">🟢 Low</option>
+      </select>
+    </div>
     <div class="flex gap-2">
       <button class="px-2 py-1 text-xs rounded bg-green-700 text-white hover:bg-green-800" (click)="updateCard()">Save</button>
       <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="editMode = false">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail View Modal -->
+<div *ngIf="showDetailView && card" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" (click)="closeDetailView()">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold text-gray-900">{{ card.title }}</h3>
+        <button (click)="closeDetailView()" class="text-gray-400 hover:text-gray-500">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="mb-6">
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Description</h4>
+        <p class="whitespace-pre-wrap text-gray-700 break-words">{{ card.description || 'No description' }}</p>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <p class="text-gray-500">Priority</p>
+          <span class="font-medium" [ngClass]="{
+            'text-green-600': card.priority === 0,
+            'text-yellow-600': card.priority === 1,
+            'text-orange-600': card.priority === 2,
+            'text-red-600': card.priority === 3
+          }">
+            {{ getPriorityText(card.priority) }}
+          </span>
+        </div>
+        <div>
+          <p class="text-gray-500">Created On:</p>
+          <p class="font-medium">{{ card.createdOn | date:'medium' }}</p>
+        </div>
+        <div>
+          <p class="text-gray-500">Status</p>
+          <p class="font-medium">In Column #{{ card.columnId }}</p>
+        </div>
+        <div>
+          <p class="text-gray-500">Order</p>
+          <p class="font-medium">#{{ card.order + 1 }}</p>
+        </div>
+      </div>
+      
+      <div class="mt-6 flex justify-end gap-2">
+        <button (click)="editCard(); closeDetailView()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Edit
+        </button>
+        <button (click)="closeDetailView()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          Close
+        </button>
+      </div>
     </div>
   </div>
 </div>

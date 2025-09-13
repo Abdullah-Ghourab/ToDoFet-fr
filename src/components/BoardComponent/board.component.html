@@ -115,11 +115,44 @@
   <div *ngIf="showAddCardModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-20"(click)="showAddCardModal = false">
     <div class="bg-white rounded shadow-xl w-full max-w-md p-4"(click)="$event.stopPropagation()">
       <h3 class="text-lg font-semibold mb-3">Add Card</h3>
-      <input class="w-full rounded border-slate-300 mb-2" [(ngModel)]="cardTitle" placeholder="Card title">
-      <textarea class="w-full rounded border-slate-300 mb-2 min-h-[80px]" [(ngModel)]="cardDescription" placeholder="Description"></textarea>
-      <select class="w-full rounded border-slate-300 mb-3 cursor-pointer" [(ngModel)]="cardColumnId">
-        <option *ngFor="let col of columnComponent?.columns" [ngValue]="col.id">{{ col.title }}</option>
-      </select>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <input class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 [(ngModel)]="cardTitle" 
+                 placeholder="Card title"
+                 required>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[80px]" 
+                    [(ngModel)]="cardDescription" 
+                    placeholder="Add a detailed description...">
+          </textarea>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+            <select class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer" 
+                    [(ngModel)]="cardPriority">
+              <option [ngValue]="3" class="text-red-600">🚨 Critical</option>
+              <option [ngValue]="2" class="text-orange-500">🔴 High</option>
+              <option [ngValue]="1" class="text-blue-600">🔵 Medium</option>
+              <option [ngValue]="0" class="text-green-600">🟢 Low</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Column</label>
+            <select class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer" 
+                    [(ngModel)]="cardColumnId" required>
+              <option *ngFor="let col of columnComponent?.columns" [ngValue]="col.id">{{ col.title }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div class="flex justify-end gap-2">
         <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" (click)="showAddCardModal = false">Cancel</button>
         <button class="px-3 py-1 rounded text-white bg-green-700 text-white hover:bg-green-800"  (click)="createCardFromModal()">Create</button>

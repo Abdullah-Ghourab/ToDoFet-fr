@@ -24,7 +24,15 @@ export class ColumnComponent implements OnInit, OnChanges {
   newColumn: Column = { id: 0, title: '', order: 0, boardId: 0 };
   dropListIds: string[] = [];
   showAddCardForm = false;
-  boardNewCard: Card = { id: 0, title: '', description: '', order: 0, columnId: 0 };
+  boardNewCard: Card = { 
+    id: 0, 
+    title: '', 
+    description: '', 
+    createdOn: new Date().toISOString(),
+    priority: 1, // Default to Medium priority
+    order: 0, 
+    columnId: 0 
+  };
   columnMenuOpen: { [columnId: number]: boolean } = {};
   editingColumnId: number | null = null;
   editColumnTitle: string = '';
@@ -143,12 +151,17 @@ export class ColumnComponent implements OnInit, OnChanges {
   }
 
   onDrop(event: CdkDragDrop<Card[]>): void {
+    // Check if any card is in edit mode in either the source or target container
+    const anyCardInEditMode = event.container.data.some(card => card.isEditing) || 
+      (event.previousContainer !== event.container && 
+       event.previousContainer.data.some(card => card.isEditing));
+    
+    if (anyCardInEditMode) {
+      return; // Don't allow dropping if any card is being edited
+    }
+
     if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -190,7 +203,16 @@ export class ColumnComponent implements OnInit, OnChanges {
     if (!this.boardNewCard.title.trim() || !this.boardNewCard.columnId) {
       return;
     }
-    this.cardService.createCard(this.boardNewCard).subscribe((created) => {
+    
+    // Ensure priority is set (default to 1 - Medium if not set)
+    const newCard: Card = {
+      ...this.boardNewCard,
+      priority: this.boardNewCard.priority ?? 1, // Ensure priority is set
+      createdOn: new Date().toISOString(),
+      order: 0 // Will be set by the server
+    };
+    
+    this.cardService.createCard(newCard).subscribe((created) => {
       const targetColumn = this.columns.find(c => c.id === created.columnId);
       if (targetColumn) {
         if (!targetColumn.cards) {
@@ -198,8 +220,20 @@ export class ColumnComponent implements OnInit, OnChanges {
         }
         targetColumn.cards.push(created);
       }
-      this.boardNewCard = { id: 0, title: '', description: '', order: 0, columnId: 0 };
+      
+      // Reset the form with default values
+      this.boardNewCard = { 
+        id: 0, 
+        title: '', 
+        description: '', 
+        createdOn: new Date().toISOString(),
+        priority: 1, // Reset to default Medium priority
+        order: 0, 
+        columnId: this.boardNewCard.columnId // Keep the same column selected
+      };
+      
       this.showAddCardForm = false;
+      this.loadColumns(); // Refresh to ensure proper ordering
     });
   }
 }

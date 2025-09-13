@@ -48,15 +48,54 @@
     </div>
   </div>
 
-  <div *ngIf="showAddCardForm" class="min-w-[272px] bg-white p-3 rounded border border-slate-200 flex flex-col gap-2">
-    <input class="rounded border-slate-300" [(ngModel)]="boardNewCard.title" placeholder="Card title">
-    <textarea class="rounded border-slate-300 min-h-[60px]" [(ngModel)]="boardNewCard.description" placeholder="Description"></textarea>
-    <select class="rounded border-slate-300" [(ngModel)]="boardNewCard.columnId">
-      <option [ngValue]="col.id" *ngFor="let col of columns; trackBy: trackByColumnId">{{ col.title }}</option>
-    </select>
-    <div class="flex gap-2">
-      <button class="px-3 py-1 rounded bg-green-700 text-white hover:bg-green-800" (click)="createBoardLevelCard()">Save</button>
-      <button class="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300" (click)="showAddCardForm = false">Cancel</button>
+  <div *ngIf="showAddCardForm" class="min-w-[272px] bg-white p-3 rounded border border-slate-200 flex flex-col gap-3">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+      <input class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+             [(ngModel)]="boardNewCard.title" 
+             placeholder="Enter card title"
+             autofocus>
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <textarea class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[80px]" 
+                [(ngModel)]="boardNewCard.description" 
+                placeholder="Add a detailed description...">
+      </textarea>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+        <select class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                [(ngModel)]="boardNewCard.priority">
+          <option [ngValue]="3" class="text-red-600">🚨 Critical</option>
+          <option [ngValue]="2" class="text-orange-500">🔴 High</option>
+          <option [ngValue]="1" class="text-blue-600">🔵 Medium</option>
+          <option [ngValue]="0" class="text-green-600">🟢 Low</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Column</label>
+        <select class="w-full rounded border-slate-300 px-3 py-2 border focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                [(ngModel)]="boardNewCard.columnId">
+          <option [ngValue]="col.id" *ngFor="let col of columns; trackBy: trackByColumnId">{{ col.title }}</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="flex justify-end gap-2 pt-2">
+      <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" 
+              (click)="showAddCardForm = false">
+        Cancel
+      </button>
+      <button class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" 
+              (click)="createBoardLevelCard()"
+              [disabled]="!boardNewCard.title.trim()">
+        Add Card
+      </button>
     </div>
   </div>
 </div>

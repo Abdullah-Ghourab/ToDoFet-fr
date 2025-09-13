@@ -18,8 +18,20 @@ export class CardService {
     return this.http.post<Card>(this.apiUrl, card);
   }
 
-  updateCard(id: number, card: Card): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, card);
+  updateCard(id: number, card: Card): Observable<Card> {
+    // Ensure the card ID in the URL matches the card object's ID
+    if (id !== card.id) {
+      throw new Error(`Card ID mismatch: URL ID (${id}) does not match card ID (${card.id})`);
+    }
+    
+    // Log the request payload for debugging
+    console.log('Sending update request for card:', JSON.stringify(card, null, 2));
+    
+    return this.http.put<Card>(`${this.apiUrl}/${id}`, card, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   deleteCard(id: number): Observable<void> {
