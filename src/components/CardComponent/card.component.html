@@ -96,7 +96,7 @@
     </div>
     <div class="flex gap-2">
       <button class="px-2 py-1 text-xs rounded bg-green-700 text-white hover:bg-green-800" (click)="updateCard()">Save</button>
-      <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="editMode = false">Cancel</button>
+      <button class="px-2 py-1 text-xs rounded bg-slate-200 hover:bg-slate-300" (click)="$event.stopPropagation(); editMode = false">Cancel</button>
     </div>
   </div>
 </div>
@@ -134,14 +134,6 @@
         <div>
           <p class="text-gray-500">Created On:</p>
           <p class="font-medium">{{ card.createdOn | date:'medium' }}</p>
-        </div>
-        <div>
-          <p class="text-gray-500">Status</p>
-          <p class="font-medium">In Column #{{ card.columnId }}</p>
-        </div>
-        <div>
-          <p class="text-gray-500">Order</p>
-          <p class="font-medium">#{{ card.order + 1 }}</p>
         </div>
       </div>
       
