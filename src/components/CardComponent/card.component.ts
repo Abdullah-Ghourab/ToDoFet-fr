@@ -4,13 +4,12 @@ import { Column } from '../../models/column.model';
 import { CardService } from '../../services/card.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CdkDrag } from '@angular/cdk/drag-drop';
 import { MoveCardRequest } from '../../interface/move-card-request';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, FormsModule, CdkDrag],
+  imports: [CommonModule, FormsModule],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css']
 })
@@ -21,7 +20,7 @@ export class CardComponent implements OnInit {
   @Input() availableColumns: Column[] = [];
   @Input() onCardDeletedCallback?: (cardId: number) => void;
   @Output() cardDeleted = new EventEmitter<number>();
-  @Output() cardMoved = new EventEmitter<void>();
+  @Output() cardMoved = new EventEmitter<Card>();
   
   editMode = false;
   menuOpen = false;
@@ -212,23 +211,14 @@ export class CardComponent implements OnInit {
         newPosition: 1 // Move to top of the target column
       };
       
-      // Update the UI optimistically
-      const previousColumnId = this.card.columnId;
-      this.card.columnId = this.selectedColumnId;
-      
       this.cardService.moveCard(this.card.id, request).subscribe({
         next: () => {
           this.showMoveDropdown = false;
           this.selectedColumnId = null;
-          // Emit the event to update the parent component
           this.cardMoved.emit();
         },
         error: (error) => {
           console.error('Error moving card:', error);
-          // Revert the UI change if there's an error
-          if (this.card) {
-            this.card.columnId = previousColumnId;
-          }
           this.showMoveDropdown = false;
         }
       });

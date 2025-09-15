@@ -1,10 +1,5 @@
 <div class="flex gap-4 overflow-x-auto p-4">
   <div *ngFor="let column of columns; trackBy: trackByColumnId" 
-       cdkDropList
-       [id]="column.id.toString()"
-       [cdkDropListData]="column.cards || []"
-       [cdkDropListConnectedTo]="dropListIds"
-       (cdkDropListDropped)="onDrop($event)"
        class="min-w-[272px] bg-rose-50 rounded-md p-3 flex flex-col gap-3" style="background-color: #fce3e4 !important;">
     <div class="flex items-center justify-between pb-3 border-b border-slate-300 mb-3 bg-rose-200 rounded-t-md -mx-3 -mt-3 px-3 pt-3">
       <div *ngIf="editingColumnId === column.id; else displayTitle" class="flex-1 mr-2">
@@ -32,10 +27,8 @@
     </div>
     
     <div class="flex flex-col gap-2 min-h-[100px]">
-      <div *ngFor="let card of column.cards; trackBy: trackByCardId" 
-           cdkDrag
-           class="cursor-move select-none">
-        <app-card [card]="card" [availableColumns]="columns" [onCardDeletedCallback]="onCardDeleted.bind(this)" (cardDeleted)="onCardDeleted($event)" (cardMoved)="onCardMoved()"></app-card>
+      <div *ngFor="let card of column.cards; trackBy: trackByCardId" class="select-none">
+        <app-card [card]="card" [availableColumns]="columns" (cardDeleted)="onCardDeleted($event)" (cardMoved)="onCardMoved()"></app-card>
       </div>
     </div>
   </div>

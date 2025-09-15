@@ -4,16 +4,15 @@ import { Card } from '../../models/card.model';
 import { ColumnService } from '../../services/column.service';
 import { CardService } from '../../services/card.service';
 import { CommonModule } from '@angular/common';
-import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+// Drag-and-drop removed
 import { CardComponent } from '../CardComponent/card.component';
 import { Board } from '../../models/board.model';
-import { MoveCardRequest } from '../../interface/move-card-request';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-column',
   standalone: true,
-  imports: [CommonModule, CdkDropList, CdkDrag, CardComponent,FormsModule],
+  imports: [CommonModule, CardComponent, FormsModule],
   templateUrl: './column.component.html',
   styleUrls: ['./column.component.css']
 })
@@ -22,7 +21,7 @@ export class ColumnComponent implements OnInit, OnChanges {
   columns: Column[] = [];
   showColumnForm = false;
   newColumn: Column = { id: 0, title: '', order: 0, boardId: 0 };
-  dropListIds: string[] = [];
+  // drag-and-drop removed: dropListIds no longer used
   showAddCardForm = false;
   boardNewCard: Card = { 
     id: 0, 
@@ -38,6 +37,7 @@ export class ColumnComponent implements OnInit, OnChanges {
   editColumnTitle: string = '';
   showDeleteAlert = false;
   columnToDelete: Column | null = null;
+  // drag-and-drop removed: suppressAutoReload and drop list refs
 
   constructor(
     private columnService: ColumnService,
@@ -48,6 +48,8 @@ export class ColumnComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.loadColumns();
   }
+
+  // drag-and-drop removed: allowDrop predicate
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['board'] && this.board?.id) {
@@ -66,10 +68,11 @@ export class ColumnComponent implements OnInit, OnChanges {
             ...col,
             cards: (col.cards || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
           }));
-        this.dropListIds = (this.columns || []).map(c => c.id.toString());
+        // drag-and-drop removed: no connected list ids needed
       });
     }
   }
+
 
   createColumn(): void {
     this.newColumn.boardId = this.board.id;
@@ -135,7 +138,7 @@ export class ColumnComponent implements OnInit, OnChanges {
   }
 
   onCardMoved(): void {
-    // Reload columns to reflect the card move
+    // Simply reload all columns to reflect the changes
     this.loadColumns();
   }
 
@@ -150,46 +153,17 @@ export class ColumnComponent implements OnInit, OnChanges {
     }
   }
 
-  onDrop(event: CdkDragDrop<Card[]>): void {
-    // Check if any card is in edit mode in either the source or target container
-    const anyCardInEditMode = event.container.data.some(card => card.isEditing) || 
-      (event.previousContainer !== event.container && 
-       event.previousContainer.data.some(card => card.isEditing));
-    
-    if (anyCardInEditMode) {
-      return; // Don't allow dropping if any card is being edited
-    }
+  // drag-and-drop removed: updateCardOrders no longer used
 
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
+  // drag-and-drop removed: onDrop no longer used
 
-    const card = event.container.data[event.currentIndex];
-    const newColumnId = Number(event.container.id);
-    if (card) {
-      card.columnId = newColumnId;
-    }
-    const request: MoveCardRequest = {
-      newColumnId: newColumnId,
-      newPosition: event.currentIndex + 1
-    };
-
-    this.cardService.moveCard(card.id, request).subscribe();
+  trackByColumnId(_index: number, column: Column): number {
+    return column?.id ?? -1;
   }
 
-  trackByColumnId(index: number, column: Column): number {
-    return column.id;
-  }
-
-  trackByCardId(index: number, card: Card): number {
-    return card.id;
+  trackByCardId(_index: number, card: Card): any {
+    // Use a composite key so moving between columns changes identity and forces re-render
+    return card ? `${card.id}-${card.columnId}` : -1;
   }
 
   openAddCardForm(): void {

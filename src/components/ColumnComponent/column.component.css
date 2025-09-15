@@ -32,18 +32,6 @@
   cursor: move;
 }
 
-.card-item.cdk-drag-preview {
-  opacity: 0.5;
-}
-
-.card-item.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cards-list.cdk-drop-list-dragging .card-item:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
 .add-column {
   min-width: 300px;
   display: flex;

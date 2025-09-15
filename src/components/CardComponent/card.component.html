@@ -1,10 +1,7 @@
 <!-- Card Preview -->
 <div *ngIf="!isNew && card" class="bg-white p-3 rounded shadow-sm border border-slate-200 hover:shadow-md transition-all"
-     [class.cursor-move]="!showDetailView"
      [class.bg-blue-50]="editMode"
-     (click)="!editMode && openDetailView()"
-     cdkDrag
-     [cdkDragDisabled]="showDetailView">
+     (click)="!editMode && openDetailView()">
   <div *ngIf="!editMode">
     <div class="flex items-start justify-between gap-2">
       <div class="flex-1 min-w-0">

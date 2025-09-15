@@ -38,7 +38,7 @@ export class CardService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  moveCard(id: number, request: MoveCardRequest): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/Move`, request);
+  moveCard(id: number, request: MoveCardRequest): Observable<Card> {
+    return this.http.patch<Card>(`${this.apiUrl}/${id}/Move`, request);
   }
 }
